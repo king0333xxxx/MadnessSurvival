@@ -23,13 +23,18 @@ public class GameManager : MonoBehaviour
         currentState = newState;
         switch (currentState)
         {
+            // Di dalam GameManager.cs fungsi ChangeState()
             case TurnState.StartRun:
-                // Setup deck awal, reset hari
+                DeckManager.Instance.InitializeDeck(); // Inisialisasi deck di awal run
                 ChangeState(TurnState.PlayerTurn);
                 break;
+
             case TurnState.PlayerTurn:
                 PlayerStats.Instance.currentEnergy = PlayerStats.Instance.maxEnergy;
-                // Draw kartu ke tangan disini nanti
+
+                // Tarik 3 kartu di awal turn
+                DeckManager.Instance.DrawCards(3);
+
                 Debug.Log("Hari " + currentDay + ": Giliran Player.");
                 break;
             case TurnState.EnvironmentTurn:
@@ -43,18 +48,19 @@ public class GameManager : MonoBehaviour
 
     private void HandleEnvironmentDrain()
     {
-        Debug.Log("Malam tiba... Kegelapan menguras statusmu.");
-        // Efek ruangan (Malam biasa)
         PlayerStats.Instance.ModifySupplies(-10);
         PlayerStats.Instance.ModifySanity(-5);
 
-        // Cek jika ganti hari
         currentDay++;
 
-        // Pindah ke giliran player lagi atau masuk ke stage upgrade jika sudah hari ke-5
+        // Jika hari ke-5, panggil RewardManager
         if (currentDay == 5)
         {
             ChangeState(TurnState.UpgradeStage);
+
+            // PASTIKAN kamu mereferensikan RewardManager di GameManager
+            // Misalnya dengan FindObjectOfType atau Singleton
+            FindObjectOfType<RewardManager>().ShowRewards();
         }
         else
         {
@@ -66,7 +72,14 @@ public class GameManager : MonoBehaviour
     {
         if (currentState == TurnState.PlayerTurn)
         {
+            DeckManager.Instance.DiscardHand(); // Bersihkan tangan (Kecuali kartu Curse)
             ChangeState(TurnState.EnvironmentTurn);
         }
+    }
+
+    public void StartTurn() 
+    { 
+
+
     }
 }

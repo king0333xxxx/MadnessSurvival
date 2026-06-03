@@ -42,11 +42,9 @@ public class CardDisplay : MonoBehaviour
         // Cek apakah Energy cukup
         if (PlayerStats.Instance.currentEnergy >= cardData.energyCost)
         {
-            // Eksekusi efek kartu (darah/sanity bertambah/berkurang)
-            cardData.PlayCard();
+            cardData.PlayCard(); // Eksekusi efek status pada player
 
-            // Hapus kartu dari tangan (karena sudah dipakai)
-            Destroy(gameObject);
+            DeckManager.Instance.PlayCard(cardData); // Kabari deck manager bahwa kartu ini sudah pindah ke discard
         }
         else
         {
