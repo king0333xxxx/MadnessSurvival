@@ -1,3 +1,4 @@
+using System; // Tambahkan ini di paling atas untuk Action
 using UnityEngine;
 
 public enum TurnState { StartRun, PlayerTurn, ResolveEffects, EnvironmentTurn, UpgradeStage, GameOver }
@@ -6,7 +7,12 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
     public TurnState currentState;
+
     public int currentDay = 1;
+    public bool isEndlessMode = false; // Penanda apakah mode endless aktif
+
+    // Event untuk UI Day Text
+    public event Action<int> OnDayChanged;
 
     private void Awake()
     {
@@ -23,25 +29,25 @@ public class GameManager : MonoBehaviour
         currentState = newState;
         switch (currentState)
         {
-            // Di dalam GameManager.cs fungsi ChangeState()
             case TurnState.StartRun:
-                DeckManager.Instance.InitializeDeck(); // Inisialisasi deck di awal run
+                DeckManager.Instance.InitializeDeck();
+                currentDay = 1;
+                isEndlessMode = false;
+                OnDayChanged?.Invoke(currentDay); // Panggil event update UI pertama kali
                 ChangeState(TurnState.PlayerTurn);
                 break;
 
             case TurnState.PlayerTurn:
                 PlayerStats.Instance.currentEnergy = PlayerStats.Instance.maxEnergy;
-
-                // Tarik 3 kartu di awal turn
                 DeckManager.Instance.DrawCards(3);
-
-                Debug.Log("Hari " + currentDay + ": Giliran Player.");
                 break;
+
             case TurnState.EnvironmentTurn:
                 HandleEnvironmentDrain();
                 break;
+
             case TurnState.GameOver:
-                Debug.Log("Game Over Screen");
+                Debug.Log("Game Over / Win Screen");
                 break;
         }
     }
@@ -51,15 +57,22 @@ public class GameManager : MonoBehaviour
         PlayerStats.Instance.ModifySupplies(-10);
         PlayerStats.Instance.ModifySanity(-5);
 
-        currentDay++;
+        // CEK MENANG: Trigger HANYA di akhir hari ke-10 dan jika BUKAN mode endless
+        if (currentDay == 10 && !isEndlessMode)
+        {
+            ChangeState(TurnState.GameOver);
+            UIGameOver.Instance.ShowGameOver(true);
+            return;
+        }
 
-        // Jika hari ke-5, panggil RewardManager
-        if (currentDay == 5)
+        // Jika tidak menang (atau sedang endless), lanjut hari berikutnya
+        currentDay++;
+        OnDayChanged?.Invoke(currentDay); // Beritahu UI bahwa hari ganti
+
+        // Tetap berikan Upgrade Screen setiap kelipatan 5 hari (Hari 5, 10, 15, dst.)
+        if (currentDay % 5 == 0)
         {
             ChangeState(TurnState.UpgradeStage);
-
-            // PASTIKAN kamu mereferensikan RewardManager di GameManager
-            // Misalnya dengan FindObjectOfType atau Singleton
             FindObjectOfType<RewardManager>().ShowRewards();
         }
         else
@@ -72,14 +85,21 @@ public class GameManager : MonoBehaviour
     {
         if (currentState == TurnState.PlayerTurn)
         {
-            DeckManager.Instance.DiscardHand(); // Bersihkan tangan (Kecuali kartu Curse)
+            DeckManager.Instance.DiscardHand();
             ChangeState(TurnState.EnvironmentTurn);
         }
     }
 
-    public void StartTurn() 
-    { 
+    // Fungsi baru ini akan dipanggil oleh UI Game Over saat tombol "Try Endless" diklik
+    public void StartEndlessMode()
+    {
+        isEndlessMode = true;
 
+        // Pindah hari ke-11
+        currentDay++;
+        OnDayChanged?.Invoke(currentDay);
 
+        // Lanjut permainan
+        ChangeState(TurnState.PlayerTurn);
     }
 }

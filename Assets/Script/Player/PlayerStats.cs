@@ -68,6 +68,7 @@ public class PlayerStats : MonoBehaviour
     private void HandleDefeat()
     {
         Debug.Log("Game Over: Player Mati!");
-        // Triger event Game Over disini
+        GameManager.Instance.ChangeState(TurnState.GameOver);
+        UIGameOver.Instance.ShowGameOver(false); // Panggil UI Kalah
     }
 }
