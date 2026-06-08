@@ -1,10 +1,15 @@
 using System; // Tambahkan ini di paling atas untuk Action
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum TurnState { StartRun, PlayerTurn, ResolveEffects, EnvironmentTurn, UpgradeStage, GameOver }
 
 public class GameManager : MonoBehaviour
 {
+    [Header("Event System")]
+    public DailyEventData normalDayEvent; 
+    public List<DailyEventData> possibleSpecialEvents;
+
     public static GameManager Instance { get; private set; }
     public TurnState currentState;
 
@@ -54,31 +59,22 @@ public class GameManager : MonoBehaviour
 
     private void HandleEnvironmentDrain()
     {
-        PlayerStats.Instance.ModifySupplies(-10);
-        PlayerStats.Instance.ModifySanity(-5);
+        int nextDay = currentDay + 1;
+        DailyEventData eventForTomorrow = normalDayEvent; // Set default ke hari biasa
 
-        // CEK MENANG: Trigger HANYA di akhir hari ke-10 dan jika BUKAN mode endless
-        if (currentDay == 10 && !isEndlessMode)
+        // Kocok dan cari apakah ada event spesial yang terpicu untuk besok
+        foreach (DailyEventData specialEvent in possibleSpecialEvents)
         {
-            ChangeState(TurnState.GameOver);
-            UIGameOver.Instance.ShowGameOver(true);
-            return;
+            if (specialEvent.CanTrigger(nextDay))
+            {
+                eventForTomorrow = specialEvent;
+                break; // Jika ada 1 event yang tembus syarat, ambil itu dan stop pengecekan
+            }
         }
 
-        // Jika tidak menang (atau sedang endless), lanjut hari berikutnya
-        currentDay++;
-        OnDayChanged?.Invoke(currentDay); // Beritahu UI bahwa hari ganti
-
-        // Tetap berikan Upgrade Screen setiap kelipatan 5 hari (Hari 5, 10, 15, dst.)
-        if (currentDay % 5 == 0)
-        {
-            ChangeState(TurnState.UpgradeStage);
-            FindObjectOfType<RewardManager>().ShowRewards();
-        }
-        else
-        {
-            ChangeState(TurnState.PlayerTurn);
-        }
+        // Serahkan ke UI untuk dianimasikan. 
+        
+        UIDayTransition.Instance.ShowDaySummary(eventForTomorrow, nextDay);
     }
 
     public void EndTurn()
@@ -104,7 +100,34 @@ public class GameManager : MonoBehaviour
         ChangeState(TurnState.EnvironmentTurn);
     }
 
-    // Fungsi baru ini akan dipanggil oleh UI Game Over saat tombol "Try Endless" diklik
+    // FUNGSI Dipanggil oleh UIDayTransition setelah panel layar hitam ditutup
+    public void CompleteEnvironmentTurn()
+    {
+        // CEK MENANG (Sama seperti logika sebelumnya)
+        if (currentDay == 10 && !isEndlessMode)
+        {
+            ChangeState(TurnState.GameOver);
+            UIGameOver.Instance.ShowGameOver(true);
+            return;
+        }
+
+        // Jika tidak menang, update angka hari
+        currentDay++;
+        OnDayChanged?.Invoke(currentDay);
+
+        // Pengecekan Upgrade Stage (Reward)
+        if (currentDay % 5 == 0)
+        {
+            ChangeState(TurnState.UpgradeStage);
+            FindObjectOfType<RewardManager>().ShowRewards();
+        }
+        else
+        {
+            ChangeState(TurnState.PlayerTurn);
+        }
+    }
+
+    // Fungsi dipanggil oleh UI Game Over saat tombol "Try Endless" diklik
     public void StartEndlessMode()
     {
         isEndlessMode = true;

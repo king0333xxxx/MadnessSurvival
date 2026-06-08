@@ -3,22 +3,21 @@ using UnityEngine;
 
 public class UIHandContainer : MonoBehaviour
 {
-    [Header("References")]
-    public GameObject cardPrefab;
+    [Header("Card Layout References")]
     public Transform handContainer;
 
-    // KITA PINDAHKAN SUBSCRIBE KE START
+    [Header("Card Template Prefabs")]
+    public GameObject actionCardPrefab;
+    public GameObject resourceCardPrefab;
+    public GameObject upgradeCardPrefab;
+    public GameObject curseCardPrefab;
+
     private void Start()
     {
-        // 1. Daftar ke event. Karena DeckManager pakai Awake, Instance-nya pasti sudah ada di sini.
         DeckManager.Instance.OnHandUpdated += RefreshHandVisuals;
-
-        // 2. Langsung panggil render visual satu kali saat game dimulai.
-        // Ini untuk menangani kasus jika GameManager sudah menarik kartu duluan sebelum skrip ini aktif.
         RefreshHandVisuals();
     }
 
-    // KITA PINDAHKAN UNSUBSCRIBE KE ONDESTROY (Lebih aman untuk UI)
     private void OnDestroy()
     {
         if (DeckManager.Instance != null)
@@ -35,7 +34,16 @@ public class UIHandContainer : MonoBehaviour
 
         foreach (CardData cardData in currentHand)
         {
-            GameObject newCardObj = Instantiate(cardPrefab, handContainer);
+            // Tentukan prefab berdasarkan tipe kartu data saat ini
+            GameObject targetPrefab = GetPrefabByType(cardData.cardType);
+
+            if (targetPrefab == null)
+            {
+                Debug.LogError($"Prefab untuk tipe {cardData.cardType} belum dimasukkan ke Inspector!");
+                continue;
+            }
+
+            GameObject newCardObj = Instantiate(targetPrefab, handContainer);
             CardDisplay cardDisplay = newCardObj.GetComponent<CardDisplay>();
 
             if (cardDisplay != null)
@@ -43,6 +51,19 @@ public class UIHandContainer : MonoBehaviour
                 cardDisplay.cardData = cardData;
                 cardDisplay.UpdateCardVisuals();
             }
+        }
+    }
+
+    // Fungsi pembantu untuk memetakan enum tipe kartu ke Game Object Prefab
+    private GameObject GetPrefabByType(CardType type)
+    {
+        switch (type)
+        {
+            case CardType.Action: return actionCardPrefab;
+            case CardType.Resource: return resourceCardPrefab;
+            case CardType.Upgrade: return upgradeCardPrefab;
+            case CardType.Curse: return curseCardPrefab;
+            default: return actionCardPrefab;
         }
     }
 

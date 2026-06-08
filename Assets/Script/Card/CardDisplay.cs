@@ -5,17 +5,16 @@ using TMPro;
 public class CardDisplay : MonoBehaviour
 {
     [Header("Data Reference")]
-    public CardData cardData; // Drag ScriptableObject kartu ke sini nanti di Inspector
+    public CardData cardData;
 
     [Header("UI References")]
     public TextMeshProUGUI nameText;
     public TextMeshProUGUI descriptionText;
     public TextMeshProUGUI costText;
-    // public Image cardArt; // Jika ada Sprite Model
+    public Image cardArt; 
 
     private void Start()
     {
-        // Update tampilan saat kartu muncul di tangan
         if (cardData != null)
         {
             UpdateCardVisuals();
@@ -30,26 +29,27 @@ public class CardDisplay : MonoBehaviour
         int actualCost = cardData.GetActualEnergyCost();
         costText.text = actualCost.ToString();
 
-        // Visual Polish: Jadikan teks harga warna merah jika harganya sedang naik karena kutukan
+        // Visual Polish: Warna teks cost berubah berdasarkan penalti
         if (actualCost > cardData.baseEnergyCost)
         {
-            costText.color = Color.red;
+            costText.color = Color.red; // Harga naik karena kutukan
         }
         else
         {
-            costText.color = Color.magenta;
+            costText.color = Color.white; // Harga normal (Sesuaikan dengan warna desainmu)
         }
 
-        Image bgImage = GetComponent<Image>();
-        if (cardData.cardType == CardType.Curse) bgImage.color = Color.magenta;
-        else if (cardData.cardType == CardType.Action) bgImage.color = Color.cyan;
+        // Sinkronisasi gambar art jika ada
+        if (cardArt != null && cardData.cardArt != null)
+        {
+            cardArt.sprite = cardData.cardArt;
+        }
     }
 
     public void OnClickPlayCard()
     {
         if (cardData == null) return;
 
-        // Gunakan GetActualEnergyCost() di sini juga
         if (PlayerStats.Instance.currentEnergy >= cardData.GetActualEnergyCost())
         {
             cardData.PlayCard();
@@ -57,7 +57,6 @@ public class CardDisplay : MonoBehaviour
             DeckManager.Instance.TriggerHandUpdate();
 
             bool isPositive = (cardData.cardType != CardType.Curse);
-            // Panggil UI Avatar Manager
             if (UIAvatarManager.Instance != null)
             {
                 UIAvatarManager.Instance.ShowCardReaction(isPositive);

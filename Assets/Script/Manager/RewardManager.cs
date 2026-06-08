@@ -4,34 +4,53 @@ using UnityEngine;
 public class RewardManager : MonoBehaviour
 {
     [Header("UI References")]
-    public GameObject rewardPanel; // Panel yang menutupi layar saat Upgrade Stage
-    public Transform rewardContainer; // Tempat kartu pilihan di-spawn (pakai Horizontal Layout)
-    public GameObject rewardCardPrefab; // Prefab UI khusus untuk reward (bisa pakai CardPrefab yang sama)
+    public GameObject rewardPanel;
+    public Transform rewardContainer;
 
-    [Header("Reward Pool (Semua kemungkinan hadiah)")]
-    public List<CardData> possibleRewards; // Isi dengan berbagai macam CardData dari Inspector
+    [Header("Reward Template Prefabs")]
+    public GameObject actionRewardPrefab;
+    public GameObject resourceRewardPrefab;
+    public GameObject upgradeRewardPrefab;
+    public GameObject curseRewardPrefab;
+
+    [Header("Reward Pool")]
+    public List<CardData> possibleRewards;
 
     private void Start()
     {
-        rewardPanel.SetActive(false); // Sembunyikan panel di awal game
+        rewardPanel.SetActive(false);
     }
 
-    // Dipanggil oleh GameManager saat masuk TurnState.UpgradeStage
     public void ShowRewards()
     {
         rewardPanel.SetActive(true);
         ClearRewards();
 
-        // Ambil 3 kartu acak dari pool
         List<CardData> rolledRewards = GetRandomRewards(3);
 
         foreach (CardData rewardCard in rolledRewards)
         {
-            GameObject newRewardObj = Instantiate(rewardCardPrefab, rewardContainer);
+            // Ambil prefab yang sesuai untuk tampilan layar reward
+            GameObject targetPrefab = GetPrefabByType(rewardCard.cardType);
 
-            // Kita butuh script khusus untuk tombol reward, kita buat di Langkah 4
+            if (targetPrefab == null) continue;
+
+            GameObject newRewardObj = Instantiate(targetPrefab, rewardContainer);
+
             UIRewardCard uiReward = newRewardObj.AddComponent<UIRewardCard>();
             uiReward.Initialize(rewardCard, this);
+        }
+    }
+
+    private GameObject GetPrefabByType(CardType type)
+    {
+        switch (type)
+        {
+            case CardType.Action: return actionRewardPrefab;
+            case CardType.Resource: return resourceRewardPrefab;
+            case CardType.Upgrade: return upgradeRewardPrefab;
+            case CardType.Curse: return curseRewardPrefab;
+            default: return actionRewardPrefab;
         }
     }
 
@@ -46,27 +65,20 @@ public class RewardManager : MonoBehaviour
         return results;
     }
 
-    // Dipanggil saat player mengklik salah satu kartu hadiah
     public void OnRewardSelected(CardData selectedCard)
     {
         if (selectedCard.cardType == CardType.Upgrade)
         {
-            // Jika ini kartu Upgrade pasif, langsung eksekusi efeknya (misal +1 Max Energy)
-            // HANYA eksekusi, TIDAK ditambahkan ke dek
             selectedCard.PlayCard();
             Debug.Log("Player memilih Upgrade Stat!");
         }
         else
         {
-            // Jika ini Action/Resource, tambahkan fisik kartunya ke dalam dek
             DeckManager.Instance.AddCardToDeck(selectedCard);
         }
 
-        // Tutup panel reward
         rewardPanel.SetActive(false);
         ClearRewards();
-
-        // Beritahu GameManager untuk lanjut ke hari berikutnya
         GameManager.Instance.ChangeState(TurnState.PlayerTurn);
     }
 

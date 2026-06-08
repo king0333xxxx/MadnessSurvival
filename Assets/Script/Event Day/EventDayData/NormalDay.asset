@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7025e3a2f64671244b18f8d33a3342ef, type: 3}
+  m_Name: NormalDay
+  m_EditorClassIdentifier: 
+  eventName: Normal Day
+  eventDescription: Sepertinya malam ini adalah malam biasa.
+  isDefaultNormalDay: 1
+  triggerOnSpecificInterval: 0
+  intervalDays: 3
+  triggerOnRandomChance: 0
+  probability: 20
+  sanityDrain: 5
+  suppliesDrain: 10
+  healthDrain: 0
