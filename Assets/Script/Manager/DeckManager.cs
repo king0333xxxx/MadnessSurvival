@@ -140,5 +140,10 @@ public class DeckManager : MonoBehaviour
 
         OnPileSizesChanged?.Invoke();
         Debug.Log($"Kartu {newCard.cardName} berhasil ditambahkan ke dek!");
-    }   
+    }
+
+    public void TriggerHandUpdate()
+    {
+        OnHandUpdated?.Invoke();
+    }
 }

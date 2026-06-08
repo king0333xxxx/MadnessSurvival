@@ -16,6 +16,7 @@ public class PlayerStats : MonoBehaviour
     public int maxSanity = 100;
     public int maxSupplies = 100;
     public int maxEnergy = 3; // AP per turn
+    public int cardsDrawnPerTurn = 3; // JUMLAH TARIKAN KARTU DEFAULT
 
     // Event untuk di-subscribe oleh UI nanti
     public event Action OnStatsChanged;
@@ -29,6 +30,20 @@ public class PlayerStats : MonoBehaviour
     private void Start()
     {
         ResetStats();
+
+        // Daftarkan fungsi agar saat tangan berubah (kartu ditarik/dibuang), status ikut dicek ulang
+        if (DeckManager.Instance != null)
+        {
+            DeckManager.Instance.OnHandUpdated += SyncAuraEffects;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (DeckManager.Instance != null)
+        {
+            DeckManager.Instance.OnHandUpdated -= SyncAuraEffects;
+        }
     }
 
     public void ResetStats()
@@ -40,6 +55,41 @@ public class PlayerStats : MonoBehaviour
         OnStatsChanged?.Invoke();
     }
 
+    // FUNGSI : Dynamic Getter untuk Aura
+    public int GetEffectiveMaxHealth()
+    {
+        int totalPenalty = 0;
+
+        // Hitung total penalti dari semua kartu yang ada di tangan saat ini
+        if (DeckManager.Instance != null && DeckManager.Instance.HandPile != null)
+        {
+            foreach (CardData card in DeckManager.Instance.HandPile)
+            {
+                totalPenalty += card.auraMaxHealthPenalty;
+                // jika ada 2 kartu yang sama, otomatis nambah 2 kali (Stacking!)
+            }
+        }
+
+        // Pastikan batas darah tidak tembus ke angka minus (minimal 1)
+        return Mathf.Max(1, maxHealth - totalPenalty);
+    }
+
+    // FUNGSI : Dipanggil tiap kali kartu ditarik atau dibuang
+    private void SyncAuraEffects()
+    {
+        int effectiveMax = GetEffectiveMaxHealth();
+
+        // Jika darah saat ini lebih besar dari batas Aura yang baru, pangkas darahnya
+        if (currentHealth > effectiveMax)
+        {
+            currentHealth = effectiveMax;
+        }
+
+        // Beritahu UI untuk update teksnya
+        OnStatsChanged?.Invoke();
+    }
+
+    // --- FUNGSI CURRENT STATS --- //
     public void ModifyHealth(int amount)
     {
         currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
@@ -65,10 +115,43 @@ public class PlayerStats : MonoBehaviour
         OnStatsChanged?.Invoke();
     }
 
+    // --- FUNGSI MAX STATS UPGRADE --- //
+    public void ModifyMaxHealth(int amount)
+    {
+        maxHealth += amount;
+        currentHealth += amount; // Pemain langsung mendapat darah saat upgrade max
+        OnStatsChanged?.Invoke();
+    }
+
+    public void ModifyMaxSanity(int amount)
+    {
+        maxSanity += amount;
+        currentSanity += amount;
+        OnStatsChanged?.Invoke();
+    }
+
+    public void ModifyMaxSupplies(int amount)
+    {
+        maxSupplies += amount;
+        currentSupplies += amount;
+        OnStatsChanged?.Invoke();
+    }
+
+    public void ModifyMaxEnergy(int amount)
+    {
+        maxEnergy += amount;
+        OnStatsChanged?.Invoke();
+    }
+
+    public void ModifyCardsDrawnPerTurn(int amount)
+    {
+        cardsDrawnPerTurn += amount;
+    }
+
     private void HandleDefeat()
     {
         Debug.Log("Game Over: Player Mati!");
         GameManager.Instance.ChangeState(TurnState.GameOver);
-        UIGameOver.Instance.ShowGameOver(false); // Panggil UI Kalah
+        UIGameOver.Instance.ShowGameOver(false);
     }
 }

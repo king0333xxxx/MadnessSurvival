@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour
 
             case TurnState.PlayerTurn:
                 PlayerStats.Instance.currentEnergy = PlayerStats.Instance.maxEnergy;
-                DeckManager.Instance.DrawCards(3);
+                DeckManager.Instance.DrawCards(PlayerStats.Instance.cardsDrawnPerTurn);
                 break;
 
             case TurnState.EnvironmentTurn:
@@ -83,11 +83,25 @@ public class GameManager : MonoBehaviour
 
     public void EndTurn()
     {
-        if (currentState == TurnState.PlayerTurn)
+        if (currentState != TurnState.PlayerTurn) return;
+
+        // 1. EKSEKUSI EFEK KUTUKAN DI TANGAN TERLEBIH DAHULU
+        foreach (CardData card in DeckManager.Instance.HandPile)
         {
-            DeckManager.Instance.DiscardHand();
-            ChangeState(TurnState.EnvironmentTurn);
+            if (card.cardType == CardType.Curse && card.passiveEffects != null)
+            {
+                foreach (PassiveCurseEffect passive in card.passiveEffects)
+                {
+                    passive.ApplyPassiveEffect();
+                }
+            }
         }
+
+        // 2. Bersihkan tangan (Kartu non-curse masuk ke discard pile)
+        DeckManager.Instance.DiscardHand();
+
+        // 3. Pindah ke giliran musuh / lingkungan
+        ChangeState(TurnState.EnvironmentTurn);
     }
 
     // Fungsi baru ini akan dipanggil oleh UI Game Over saat tombol "Try Endless" diklik

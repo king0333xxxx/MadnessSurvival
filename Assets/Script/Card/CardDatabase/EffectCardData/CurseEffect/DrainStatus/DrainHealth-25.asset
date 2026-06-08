@@ -9,9 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab067d52fe154da408410112433e424e, type: 3}
-  m_Name: ReduceSanity
+  m_Script: {fileID: 11500000, guid: 413543843865a4249a94af605923baf7, type: 3}
+  m_Name: DrainHealth-25
   m_EditorClassIdentifier: 
-  healthChange: 0
-  sanityChange: -20
-  suppliesChange: 0
+  healthDrain: 25
+  sanityDrain: 0
+  suppliesDrain: 0
+  maxHealthDrain: 0
+  maxSanityDrain: 0

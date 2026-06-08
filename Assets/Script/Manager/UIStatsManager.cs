@@ -45,13 +45,20 @@ public class UIStatsManager : MonoBehaviour
     private void UpdateAllStatsUI()
     {
         if (PlayerStats.Instance == null) return;
+        int effectiveMaxHealth = PlayerStats.Instance.GetEffectiveMaxHealth();
 
-        healthText.text = $"Health: {PlayerStats.Instance.currentHealth}/{PlayerStats.Instance.maxHealth}";
-        sanityText.text = $"Sanity: {PlayerStats.Instance.currentSanity}/{PlayerStats.Instance.maxSanity}";
-        suppliesText.text = $"Supplies: {PlayerStats.Instance.currentSupplies}/{PlayerStats.Instance.maxSupplies}";
+        healthText.text = $" {PlayerStats.Instance.currentHealth} / {effectiveMaxHealth}";
+        sanityText.text = $" {PlayerStats.Instance.currentSanity} / {PlayerStats.Instance.maxSanity}";
+        suppliesText.text = $" {PlayerStats.Instance.currentSupplies} / {PlayerStats.Instance.maxSupplies}";
+
+        // Beri warna ungu/magenta pada max health jika sedang terkena penalti Aura
+        if (effectiveMaxHealth < PlayerStats.Instance.maxHealth)
+        {
+            healthText.text = $" {PlayerStats.Instance.currentHealth} / <color=#FF00FF>{effectiveMaxHealth}</color>";
+        }
 
         // Energy biasanya ditampilkan sebagai angka saja atau resource point
-        energyText.text = $"Energy: {PlayerStats.Instance.currentEnergy}";
+        energyText.text = $" {PlayerStats.Instance.currentEnergy}";
 
         // --- BONUS POLISH (Nilai Tambah untuk Test) ---
         // Memberikan visual feedback jika status kritis (di bawah 30%)

@@ -11,7 +11,7 @@ public class CardDisplay : MonoBehaviour
     public TextMeshProUGUI nameText;
     public TextMeshProUGUI descriptionText;
     public TextMeshProUGUI costText;
-    // public Image cardArt; // Buka komen ini jika kamu sudah punya desain gambar
+    // public Image cardArt; // Jika ada Sprite Model
 
     private void Start()
     {
@@ -26,30 +26,46 @@ public class CardDisplay : MonoBehaviour
     {
         nameText.text = cardData.cardName;
         descriptionText.text = cardData.cardDescription;
-        costText.text = cardData.energyCost.ToString();
 
-        // Ganti warna background kartu berdasarkan tipe (opsional, untuk visual clarity)
+        int actualCost = cardData.GetActualEnergyCost();
+        costText.text = actualCost.ToString();
+
+        // Visual Polish: Jadikan teks harga warna merah jika harganya sedang naik karena kutukan
+        if (actualCost > cardData.baseEnergyCost)
+        {
+            costText.color = Color.red;
+        }
+        else
+        {
+            costText.color = Color.magenta;
+        }
+
         Image bgImage = GetComponent<Image>();
         if (cardData.cardType == CardType.Curse) bgImage.color = Color.magenta;
         else if (cardData.cardType == CardType.Action) bgImage.color = Color.cyan;
     }
 
-    // Fungsi ini akan dipanggil saat kartu di-klik
     public void OnClickPlayCard()
     {
         if (cardData == null) return;
 
-        // Cek apakah Energy cukup
-        if (PlayerStats.Instance.currentEnergy >= cardData.energyCost)
+        // Gunakan GetActualEnergyCost() di sini juga
+        if (PlayerStats.Instance.currentEnergy >= cardData.GetActualEnergyCost())
         {
-            cardData.PlayCard(); // Eksekusi efek status pada player
+            cardData.PlayCard();
+            DeckManager.Instance.PlayCard(cardData);
+            DeckManager.Instance.TriggerHandUpdate();
 
-            DeckManager.Instance.PlayCard(cardData); // Kabari deck manager bahwa kartu ini sudah pindah ke discard
+            bool isPositive = (cardData.cardType != CardType.Curse);
+            // Panggil UI Avatar Manager
+            if (UIAvatarManager.Instance != null)
+            {
+                UIAvatarManager.Instance.ShowCardReaction(isPositive);
+            }
         }
         else
         {
-            Debug.LogWarning("Energy tidak cukup untuk memainkan " + cardData.cardName);
-            // Kamu bisa tambahkan animasi UI bergetar atau teks merah di sini nanti
+            Debug.LogWarning("Energy tidak cukup!");
         }
     }
 }
