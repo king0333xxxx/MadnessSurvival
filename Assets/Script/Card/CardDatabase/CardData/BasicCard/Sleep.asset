@@ -12,10 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 531832082b3c1c046b7054fcafc04aaa, type: 3}
   m_Name: Sleep
   m_EditorClassIdentifier: 
-  cardName: Sleep
-  cardDescription: +20 Sanity
+  cardName: Take Sleep
+  cardDescription: +25 Sanity
   cardType: 0
-  energyCost: 1
+  baseEnergyCost: 2
   cardArt: {fileID: 0}
   effects:
-  - {fileID: 11400000, guid: 264297cfde9b4774d98f43a2fbe129e6, type: 2}
+  - {fileID: 11400000, guid: d917f50eb2eff814793b1d2986a7e290, type: 2}
+  passiveEffects: []
+  causesEnergyPenalty: 0
+  auraMaxHealthPenalty: 0

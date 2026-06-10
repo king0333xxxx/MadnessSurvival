@@ -94,19 +94,33 @@ public class PlayerStats : MonoBehaviour
     {
         currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
         OnStatsChanged?.Invoke();
-        if (currentHealth <= 0) HandleDefeat();
+
+        if (currentHealth <= 0)
+        {
+            HandleDefeat("Tubuhmu hancur karena luka fisik dan kekurangan darah. Kegelapan menyelimutimu...");
+        }
     }
 
     public void ModifySanity(int amount)
     {
         currentSanity = Mathf.Clamp(currentSanity + amount, 0, maxSanity);
         OnStatsChanged?.Invoke();
+
+        if (currentSanity <= 0)
+        {
+            HandleDefeat("Pikiranmu hancur ditelan kegilaan. Kamu tidak bisa lagi membedakan ilusi dan realita...");
+        }
     }
 
     public void ModifySupplies(int amount)
     {
         currentSupplies = Mathf.Clamp(currentSupplies + amount, 0, maxSupplies);
         OnStatsChanged?.Invoke();
+
+        if (currentSupplies <= 0)
+        {
+            HandleDefeat("Kamu kelaparan dan kedinginan. Tanpa suplai yang tersisa, kamu mati perlahan...");
+        }
     }
 
     public void ModifyEnergy(int amount)
@@ -148,10 +162,15 @@ public class PlayerStats : MonoBehaviour
         cardsDrawnPerTurn += amount;
     }
 
-    private void HandleDefeat()
+    private void HandleDefeat(string reason)
     {
-        Debug.Log("Game Over: Player Mati!");
+        // Mencegah fungsi ini dipanggil 2 kali (misal: jika event ngurangin 2 status jadi 0 bersamaan)
+        if (GameManager.Instance.currentState == TurnState.GameOver) return;
+
+        Debug.Log("Game Over: " + reason);
         GameManager.Instance.ChangeState(TurnState.GameOver);
-        UIGameOver.Instance.ShowGameOver(false);
+
+        // Kirim alasan kematiannya ke UI
+        UIGameOver.Instance.ShowGameOver(false, reason);
     }
 }

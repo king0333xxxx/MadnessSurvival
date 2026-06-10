@@ -22,7 +22,7 @@ public class UIGameOver : MonoBehaviour
         gameOverPanel.SetActive(false);
     }
 
-    public void ShowGameOver(bool isWin)
+    public void ShowGameOver(bool isWin, string loseReason = "")
     {
         gameOverPanel.SetActive(true);
 
@@ -32,7 +32,6 @@ public class UIGameOver : MonoBehaviour
             titleText.color = Color.yellow;
             descriptionText.text = "Kamu berhasil selamat... tapi apakah kamu berani lanjut?";
 
-            // Munculkan tombol Endless, sembunyikan Restart agar pemain memilih Endless atau Main Menu
             endlessButton.SetActive(true);
             restartButton.SetActive(false);
             mainMenuButton.SetActive(true);
@@ -41,9 +40,10 @@ public class UIGameOver : MonoBehaviour
         {
             titleText.text = "CONSUMED";
             titleText.color = Color.red;
-            descriptionText.text = "Kewarasan dan fisikmu hancur ditelan kegelapan...";
 
-            // Sembunyikan tombol Endless kalau kalah
+            // Gunakan teks alasan kekalahan yang dikirim dari PlayerStats
+            descriptionText.text = loseReason;
+
             endlessButton.SetActive(false);
             restartButton.SetActive(true);
             mainMenuButton.SetActive(true);

@@ -10,18 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 531832082b3c1c046b7054fcafc04aaa, type: 3}
-  m_Name: Soup
+  m_Name: Meditation
   m_EditorClassIdentifier: 
-  cardName: Soup
-  cardDescription: '+5 Sanity
+  cardName: Meditation
+  cardDescription: '+30 Sanity
 
-    +5 Supply'
-  cardType: 1
-  baseEnergyCost: 1
+    -25 Suplies'
+  cardType: 0
+  baseEnergyCost: 3
   cardArt: {fileID: 0}
   effects:
-  - {fileID: 11400000, guid: 75ea15e09ed42ab4aa6e00c3c8ea19f3, type: 2}
-  - {fileID: 11400000, guid: 5822fcdcfc92afc4ca8bbfeab2a41caa, type: 2}
+  - {fileID: 11400000, guid: d917f50eb2eff814793b1d2986a7e290, type: 2}
+  - {fileID: 11400000, guid: 264297cfde9b4774d98f43a2fbe129e6, type: 2}
+  - {fileID: 11400000, guid: 9d801db2890cc13448890d964f594be9, type: 2}
   passiveEffects: []
   causesEnergyPenalty: 0
   auraMaxHealthPenalty: 0

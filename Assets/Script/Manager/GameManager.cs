@@ -100,22 +100,27 @@ public class GameManager : MonoBehaviour
         ChangeState(TurnState.EnvironmentTurn);
     }
 
-    // FUNGSI Dipanggil oleh UIDayTransition setelah panel layar hitam ditutup
+    
     public void CompleteEnvironmentTurn()
     {
-        // CEK MENANG (Sama seperti logika sebelumnya)
+        
+        if (currentState == TurnState.GameOver) return;
+
+        // CEK MENANG 
         if (currentDay == 10 && !isEndlessMode)
         {
             ChangeState(TurnState.GameOver);
+
+            
             UIGameOver.Instance.ShowGameOver(true);
             return;
         }
 
-        // Jika tidak menang, update angka hari
+        // Jika tidak menang, update hari
         currentDay++;
         OnDayChanged?.Invoke(currentDay);
 
-        // Pengecekan Upgrade Stage (Reward)
+        // Pengecekan Upgrade Stage
         if (currentDay % 5 == 0)
         {
             ChangeState(TurnState.UpgradeStage);

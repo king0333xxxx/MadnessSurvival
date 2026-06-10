@@ -10,12 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 531832082b3c1c046b7054fcafc04aaa, type: 3}
-  m_Name: Curse
+  m_Name: Apple
   m_EditorClassIdentifier: 
-  cardName: Curse Sanity
-  cardDescription: -20 Sanity
-  cardType: 2
-  energyCost: 0
+  cardName: Apple
+  cardDescription: +10 Supply
+  cardType: 0
+  baseEnergyCost: 1
   cardArt: {fileID: 0}
   effects:
-  - {fileID: 11400000, guid: 1eb7059d3f0943b449cf66cea43b42eb, type: 2}
+  - {fileID: 11400000, guid: 75ea15e09ed42ab4aa6e00c3c8ea19f3, type: 2}
+  - {fileID: 11400000, guid: 75ea15e09ed42ab4aa6e00c3c8ea19f3, type: 2}
+  passiveEffects: []
+  causesEnergyPenalty: 0
+  auraMaxHealthPenalty: 0

@@ -10,18 +10,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 531832082b3c1c046b7054fcafc04aaa, type: 3}
-  m_Name: Soup
+  m_Name: The Plague
   m_EditorClassIdentifier: 
-  cardName: Soup
-  cardDescription: '+5 Sanity
+  cardName: The Plague
+  cardDescription: '-25 Max Health In Hand
 
-    +5 Supply'
-  cardType: 1
-  baseEnergyCost: 1
+
+    Purge :
+
+    -25 Suplies
+
+    -30
+    Sanity'
+  cardType: 2
+  baseEnergyCost: 0
   cardArt: {fileID: 0}
   effects:
-  - {fileID: 11400000, guid: 75ea15e09ed42ab4aa6e00c3c8ea19f3, type: 2}
-  - {fileID: 11400000, guid: 5822fcdcfc92afc4ca8bbfeab2a41caa, type: 2}
+  - {fileID: 11400000, guid: dc93745e843db5b4ba6ac95c03970025, type: 2}
+  - {fileID: 11400000, guid: 1eb7059d3f0943b449cf66cea43b42eb, type: 2}
+  - {fileID: 11400000, guid: 9d801db2890cc13448890d964f594be9, type: 2}
   passiveEffects: []
   causesEnergyPenalty: 0
-  auraMaxHealthPenalty: 0
+  auraMaxHealthPenalty: 25

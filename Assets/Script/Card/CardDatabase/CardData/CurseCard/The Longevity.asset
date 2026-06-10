@@ -10,18 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 531832082b3c1c046b7054fcafc04aaa, type: 3}
-  m_Name: Soup
+  m_Name: The Longevity
   m_EditorClassIdentifier: 
-  cardName: Soup
-  cardDescription: '+5 Sanity
-
-    +5 Supply'
-  cardType: 1
-  baseEnergyCost: 1
+  cardName: The Longevity
+  cardDescription: +75 Health
+  cardType: 2
+  baseEnergyCost: 0
   cardArt: {fileID: 0}
-  effects:
-  - {fileID: 11400000, guid: 75ea15e09ed42ab4aa6e00c3c8ea19f3, type: 2}
-  - {fileID: 11400000, guid: 5822fcdcfc92afc4ca8bbfeab2a41caa, type: 2}
-  passiveEffects: []
+  effects: []
+  passiveEffects:
+  - {fileID: 11400000, guid: ba569c4134fef7e4d9b31f4104b0fdae, type: 2}
   causesEnergyPenalty: 0
   auraMaxHealthPenalty: 0
