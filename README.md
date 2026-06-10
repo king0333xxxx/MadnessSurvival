@@ -72,6 +72,7 @@ If I had an additional 2–3 days to expand this prototype, I would prioritize t
 - Audio Manager Integration: Implement an event-driven Audio System to trigger visceral SFX when Sanity drops, or when drawing/discarding cards.
 - Advanced Card Synergies: Add an Event Bus to track "cards played this turn" to enable synergy mechanics (e.g., "Deal double Effect if the previous card was an Action card").
 - Save/Load Run State: Implement JSON serialization to save the player's current deck, day, and stats, allowing them to quit and resume mid-run.
+- Content Expansion: Design and balance a wider variety of cards (e.g., more unique Curses, highly synergistic Action cards, and specialized Resources) to fully utilize the robust ScriptableObject architecture built for this prototype.
 
 ## Known Issues
 - UI Layout Recalculation Snapping: Because cards are instantiated simultaneously and rely on Unity's HorizontalLayoutGroup, there is occasionally a one-frame visual "snap" as the layout forces the cards into their new positions.
