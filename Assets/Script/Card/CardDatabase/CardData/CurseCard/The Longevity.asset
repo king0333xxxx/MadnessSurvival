@@ -13,12 +13,22 @@ MonoBehaviour:
   m_Name: The Longevity
   m_EditorClassIdentifier: 
   cardName: The Longevity
-  cardDescription: +75 Health
+  cardDescription: '+5Health/Turn
+
+    -5Sanity/Turn
+
+
+    Purge :
+
+    -30Health'
   cardType: 2
   baseEnergyCost: 0
   cardArt: {fileID: 0}
-  effects: []
+  effects:
+  - {fileID: 11400000, guid: 958f5e9643efd994b9dae4a34148968a, type: 2}
+  - {fileID: 11400000, guid: f2daf3349b268cf4280f524ae6013a47, type: 2}
   passiveEffects:
-  - {fileID: 11400000, guid: ba569c4134fef7e4d9b31f4104b0fdae, type: 2}
+  - {fileID: 11400000, guid: af682029ec771db42924c8af603378a2, type: 2}
+  - {fileID: 11400000, guid: 48c869dc5761e2f428ed66494ae50f25, type: 2}
   causesEnergyPenalty: 0
   auraMaxHealthPenalty: 0

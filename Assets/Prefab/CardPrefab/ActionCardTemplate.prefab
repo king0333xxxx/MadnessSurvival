@@ -74,8 +74,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -937,6 +937,7 @@ MonoBehaviour:
   nameText: {fileID: 729890331018079554}
   descriptionText: {fileID: 4834215749261804049}
   costText: {fileID: 6396873156803700494}
+  cardArt: {fileID: 0}
 --- !u!114 &4819445450592765422
 MonoBehaviour:
   m_ObjectHideFlags: 0
