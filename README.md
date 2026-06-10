@@ -1,6 +1,6 @@
 # [Survival Madness]
-Date Started : 03 June 2026
-Date End Prototype : 10 June 2026
+- Date Started : 03 June 2026
+- Date End Prototype : 10 June 2026
 
 ## Game Overview
 This project is a 2D turn-based survival deckbuilder set in a dark, Lovecraftian horror universe. The core mechanic revolves around strategic resource management through a dynamic card system. The player is trapped in a mysterious room and must manage their limited Action Points (Energy) to play cards that balance three vital stats: Health, Sanity, and Supplies.
